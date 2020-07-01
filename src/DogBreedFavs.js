@@ -12,18 +12,22 @@ const DogBreedFavs = () => {
 
   const handleSearchChange = useCallback(e => {
     setSearch(e.target.value);
+    setResult('');
   }, []);
 
   const addBreedToFavs = useCallback((name, image) => {
     const breed = { name, image };
-    const existingBreed = favs.find(b => b.name === name);
-    if (existingBreed) {
-      setResult(`Breed "${capitalize(name)}" is already in your favorites.`)
-    } else {
-      setFavs(state => [...state, breed]);
-      setResult(`Found and added breed "${capitalize(name)}".`)
-    }
-  }, [favs]);
+    setFavs(state => {
+      const existingBreed = state.find(b => b.name === name);
+      if (existingBreed) {
+        setResult(`Breed "${capitalize(name)}" is already in your favorites.`);
+        return state;
+      } else {
+        setResult(`Found and added breed "${capitalize(name)}".`);
+        return [...state, breed]
+      }
+    });
+  }, []);
 
   const handleSearchClick = useCallback(() => {
     getSearchBreed(search.toLowerCase(), addBreedToFavs, setResult);
@@ -48,6 +52,10 @@ const DogBreedFavs = () => {
     const name = notYetAddedBreeds[index];
     getRandomBreed(name, addBreedToFavs, setResult)
   }, [notYetAddedBreeds, addBreedToFavs])
+
+  const removeBreed = useCallback((name) => {
+    setFavs(state => state.filter(b => b.name !== name))
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -91,6 +99,7 @@ const DogBreedFavs = () => {
               <h3 className={styles.breedName}>
                 {f.name}
               </h3>
+              <button onClick={removeBreed.bind(null, f.name)}>Remove</button>
             </div>)
           : <span>Nothing here yet</span>
         }
