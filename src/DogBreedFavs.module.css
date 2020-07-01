@@ -18,7 +18,9 @@
 .breed {
   display: inline-block;
   margin: 0.7rem;
+  padding-bottom: 1rem;
   border: 5px solid black;
+  text-align: center;
 }
 
 .image {
